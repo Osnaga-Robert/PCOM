@@ -1,0 +1,20 @@
+Pentru IPv4 am facut ceea ce se preciza in pasii pentru rezolvarea acestei probleme:
+-mai intai verificam daca el ar fi destinati
+-verificam checksum-ul
+-actualizam ttl-ul si automat checksum-ul
+-rescriem pachete
+Pentru acest task am implementat functiile pentru a identifica urmatorul hop folosind tabela de routrare si am aflat adresa mac din arp_table
+
+Pentru LPM eficient am iterat prin vector;
+
+Pentru ARP request avem cazul in care ni se cere un IP request dar nu gasim adresa mac in arp_table,
+caz in care vom cere un request pentru a afla adresa mac a destinatiei (ne vom contrui noi buff-erul
+pentru a pune datele necesare trimiterii unui arp_request)
+Dupa ce am trimis un arp_request vom afla adresa mac si vom cere un arp reply.
+La arp_reply vom dori sa adaugam datele in tabela de date a router-ului dupa care eliberam coada
+si pentru fiecare element de coada il vom trimite pentru a elibera coada
+
+Pentru ICMP request avem 3 cazuri:
+-cazul in care destinatia este chiar router-ul iar in acest caz router-ul va descifra mesajul aferent
+-cazul in care ttl <= 1 in care avem un time limit exceeded si vom modifica icmp-ul conform documentatiei
+-cazul in care nu gasim urmatorul hop deci vom trimite un destination unreachable, la fel ca la ttl dar type-ul este diferit

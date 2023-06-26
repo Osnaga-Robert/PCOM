@@ -1,0 +1,41 @@
+Aplicatie client-server TCP si UDP pentru gestionarea mesajelor
+
+Pentru acest proiect, am ales sa fac urmatoarele structuri
+ - o structura pentru pachetele udp in care se vor retine ceea ce ne trimit acestea
+ - o structura chat_packet prin care trimitem si primim mesaje care contine urmatoarele
+  * int info care are urmatoarele atribute  1 - printeaza mesajul conform cerintei
+                                            2 - exit
+                                            3 - Already subscribed
+                                            4 - Subscribed to topic
+                                            5 - Unsubscribed from topic
+                                            6 - Is not subscribed
+                                            7(default) - Possible commands
+                                            8 - return;
+  * type - tipul mesajului (INT, SHORT_INT, etc)
+  *message - mesajul propriu-zis dupa ce l-am decodificat
+  *topic - topicul care se asociaza cu mesajul
+ - o structura tcp_server_id in care stocam fd, id-ul clientului, avem doi vectori
+ sf si topic in care pentru fiecare topic se retine daca sf-ul lui este pe 0 sau pe 1;
+ topic len-ul reprezinta lungimea numarului de topice la care este abonat un client;
+ saved_messages reprezinta mesajele pe care le primeste un client care are un topic cu sf = 1
+ atunci cand este este deconectat; saved_messages_len reprezinta numarul total de mesaje salvate
+
+ In schelet avem doua structuri tcp_server_in cu clientii on si clientii off in care se stocheza informatii
+ despre clientii on si off. Cand ascultam socketii avem trei variante
+ - cazul in care primim un client nou, caz in care il adaugam in multimea de fd
+ -cazul in care primim un mesaj de la un client UDP caz in care vom decodifica mesajul si avem doua cazuri
+ fie mesajul trebuie stocat pentru clientii offline care au topicele setate pe sf = 1, fie mesajul trebuie
+ trimis catre toti clientii online care sunt abonati la acel topic
+ -cazul in care primim un mesaj de la stdin de la server, caz in care avem o singura comanda exit,
+ in caz contrar se va afisa un mesaj adecvat
+ -ultimul caz este cel in care primim un mesaj de la un client. Acesta poate sa fie un ID pentru client,
+ comanda subscribe, unsubscribe, sau exit. In cazul in care un client cu acelasi ID exista
+ Se va afisa un mesaj adecvat si se va elimina clientul respectiv; In cazul in care primim subscribe
+ la un topic vom verifica daca clientul respectiv nu este deja abonat la acest topi, iar in caz contrar
+ vom adauga topicul in lista lui; In cazul unsubscribe va fi analog, iar in caz de exit de va scoate fd-ul
+ Id-ului din tabela de fd si se va elimina.
+
+ Pentru subscriber avem ceva asemanator, doar ca primim de la stdin trei mesaje: subscribe, unsubscribe si exit,
+ in caz contrar se va afisa un mesaj corespunzator.Vom primi de la server mesajele decodificate pe care le vom
+ afisa conform cerintei. Vom afisa daca un client reuseste sa se aboneze sau nu la un topic, respectiv sa se
+ dezaboneze, iar in caz de exit, sock-etul si programul se vor inchide.

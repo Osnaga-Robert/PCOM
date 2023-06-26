@@ -1,0 +1,25 @@
+Pentru acest proiect am implementat un https request prin care
+cerem date de la un server utlizand modulele POST, GET si DELETE.
+Am folosut mai multe variabile statice deoarece in cerinta nu se
+specifica daca acestea trebuie sa fie alocate dinamic. Astfel avem
+    input in care se afla comanda noastra
+    cookie in care se afla un cookie de conectare
+    cookie1 cu ajutorul caruia am prelucrat cookie
+    token in care se afla tokenul de conectare
+    check_login si check_library verifica daca avem cookie si token
+    type repreezinta tipul de mesaj pe care il trimitem in server cu
+    ajutorul caruia vom contrui mesajul aferent cererii
+Avem mai multe cazuri de mesaj ca inpit
+    -register
+    -login
+    -enter_library
+    -get_books
+    -get_book
+    -add_book
+    -delete_book
+    -logout
+    -exit
+Pentru fiecare caz am construit mesajul aferent si l-am trimis la server
+prin intermediul functiei compute_message. Am primit raspunsul de la server
+si l-am prelucrat in functie de cazul in care ne aflam. Am folosit functia
+json.loads pentru a prelucra mesajul primit de la server.
